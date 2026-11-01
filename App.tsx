@@ -31,17 +31,6 @@ const pages = [
   { name: 'Profile & Settings', icon: Settings },
 ]
 
-const descriptions: Record<string, string> = {
-  'Study Planner': 'Your preparation schedule and daily missions.',
-  'Study Circuit': 'Track your study journey checkpoint by checkpoint.',
-  Roadmap: 'Your long-term academic racing career.',
-  'Syllabus Tracker': 'Monitor your syllabus chapter by chapter.',
-  'Reports & Tests': 'Understand your performance and mock test results.',
-  'Garage & Collection': 'Explore your vehicle collection and upgrades.',
-  'Music Room': 'Your personal focus music space.',
-  'Achievement Vault': 'Your milestones, trophies and earned rewards.',
-  'Profile & Settings': 'Manage your identity and app preferences.',
-}
 
 function Stat({ label, value, note }: { label: string; value: string; note: string }) {
   return <article className="stat-card">
