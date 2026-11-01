@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { usePersistentState } from "./storage";
 import {
   Activity, BookOpen, CalendarDays, CarFront, ChevronRight,
   CircleCheck, Gauge, LayoutDashboard, Settings, Trophy,
@@ -398,4 +399,3 @@ export default function App() {
     </main>
   </div>;
 }
-import { usePersistentState } from "./storage";
