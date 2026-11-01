@@ -1,10 +1,21 @@
 
+
 import { useState } from 'react'
 import {
-  Activity, BookOpen, CalendarDays, CarFront, ChevronRight,
-  CircleCheck, Gauge, LayoutDashboard, Settings, Trophy,
-  Map, BarChart3, Music, User, ClipboardList, Target,
-  Clock, Flame, Lock, Play
+  Activity,
+  BookOpen,
+  CalendarDays,
+  CarFront,
+  ChevronRight,
+  CircleCheck,
+  Gauge,
+  LayoutDashboard,
+  Settings,
+  Trophy,
+  Map,
+  BarChart3,
+  Music,
+  Lock,
 } from 'lucide-react'
 
 const pages = [
