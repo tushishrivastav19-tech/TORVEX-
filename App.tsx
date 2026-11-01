@@ -360,8 +360,15 @@ function ModulePage({ page }: { page: string }) {
 
 export default function App() {
   const [active, setActive] = useState("Home Garage");
-  const [chapters, setChapters] = useState<Chapter[]>(initialChapters);
-  const [tasks, setTasks] = useState<StudyTask[]>(initialTasks);
+  const [chapters, setChapters] = usePersistentState<Chapter[]>(
+  "torvex-chapters-v1",
+  initialChapters
+);
+
+const [tasks, setTasks] = usePersistentState<StudyTask[]>(
+  "torvex-tasks-v1",
+  initialTasks
+);
 
   return <div className="shell">
     <aside className="sidebar">
