@@ -1,11 +1,11 @@
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { usePersistentState } from "./storage";
 import {
   Activity, BookOpen, CalendarDays, CarFront, ChevronRight,
-  CircleCheck, Gauge, LayoutDashboard, Settings, Trophy,
+  Gauge, LayoutDashboard, Settings, Trophy,
   Map, BarChart3, Music, Plus, Trash2, Clock3, Target,
-  Flame, Play, Check, Lock, Zap, RotateCcw
+  Check, Lock
 } from "lucide-react";
 import {
   subjects, initialChapters, initialTasks, initialSessions,
