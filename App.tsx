@@ -5,7 +5,7 @@ import {
   Activity, BookOpen, CalendarDays, CarFront, ChevronRight,
   Gauge, LayoutDashboard, Settings, Trophy,
   Map, BarChart3, Music, Plus, Trash2, Clock3, Target,
-  Check, Lock
+  Check, Lock, Play
 } from "lucide-react";
 import {
   subjects, initialChapters, initialTasks, initialSessions,
