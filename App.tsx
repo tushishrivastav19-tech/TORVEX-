@@ -657,27 +657,105 @@ function Circuit({ tasks, setTasks, navigate }: any) {
   );
 }
 
-function Roadmap({tasks,chapters}: any) {
+
+function Roadmap({ tasks, chapters }: any) {
   const done = tasks.filter((t: StudyTask) => t.completed).length;
+  const chapterProgress = chapters.length
+    ? Math.round(
+        chapters.reduce((sum: number, chapter: Chapter) => {
+          const total = chapter.topics.length;
+          const completed = chapter.topics.filter((topic) => topic.completed).length;
+          return sum + (total ? (completed / total) * 100 : 0);
+        }, 0) / chapters.length
+      )
+    : 0;
+
   const levels = [
-    {name:"ROOKIE DRIVER",desc:"Start your preparation journey",goal:0},
-    {name:"PRO DRIVER",desc:"Complete 10 study missions",goal:10},
-    {name:"ELITE DRIVER",desc:"Complete 30 study missions",goal:30},
-    {name:"CHAMPION",desc:"Complete 60 study missions",goal:60}
+    { name: "ROOKIE DRIVER", title: "Ignition", desc: "Begin your preparation journey", goal: 0, reward: "Rookie identity" },
+    { name: "PRO DRIVER", title: "First Gear", desc: "Complete 5 study missions", goal: 5, reward: "Pro career badge" },
+    { name: "ELITE DRIVER", title: "Full Throttle", desc: "Complete 10 study missions", goal: 10, reward: "Elite career badge" },
+    { name: "TRACK MASTER", title: "Precision Run", desc: "Complete 20 study missions", goal: 20, reward: "Track Master badge" },
+    { name: "CHAMPION", title: "Victory Lane", desc: "Complete 30 study missions", goal: 30, reward: "Champion career badge" },
+    { name: "LEGEND", title: "The Final Lap", desc: "Complete 50 study missions", goal: 50, reward: "Legend career badge" },
   ];
-  return <section className="module-page">
-    <Banner eyebrow="TORVEX / CAREER MODE" title="YOUR CAREER ROADMAP" subtitle="A progression path built around your actual study activity."/>
-    <div className="panel">
-      <div className="panel-head"><div><span className="eyebrow">CAREER PROGRESS</span><h3>{done} missions completed</h3></div><Trophy/></div>
-      <div className="progress-track"><div className="progress-fill" style={{width:`${Math.min(100,done/60*100)}%`}}/></div>
-      {levels.map((l,i) => <div className="task-row" key={l.name}>
-        <span className="quick-num">0{i+1}</span><span><b>{l.name}</b><small>{l.desc}</small></span>
-        <span className="module-status">{done >= l.goal ? <Check/> : <Lock/>} {done >= l.goal ? "UNLOCKED" : `${l.goal-done} TO GO`}</span>
-      </div>)}
-    </div>
-    <div className="stats"><Stat label="CHAPTERS TRACKED" value={`${chapters.length}`} note="Current syllabus data"/><Stat label="MISSIONS COMPLETED" value={`${done}`} note="Recorded completion"/></div>
-  </section>;
+
+  const currentIndex = levels.reduce(
+    (last: number, level: any, index: number) =>
+      done >= level.goal ? index : last,
+    0
+  );
+
+  return (
+    <section className="module-page roadmap-v2">
+      <Banner
+        eyebrow="TORVEX / CAREER MODE"
+        title="YOUR CAREER ROADMAP"
+        subtitle="Every completed study mission moves your career forward."
+      />
+
+      <div className="roadmap-overview">
+        <div>
+          <span className="eyebrow">CAREER PROGRESS</span>
+          <h2>{levels[currentIndex].name}</h2>
+          <p>{done} missions completed · {levels.length} career gates</p>
+        </div>
+        <div className="roadmap-progress-ring">
+          <strong>{Math.min(100, Math.round((done / 50) * 100))}%</strong>
+          <span>CAREER</span>
+        </div>
+      </div>
+
+      <div className="roadmap-map">
+        <div className="roadmap-map-heading">
+          <span className="eyebrow">THE ROAD TO CHAMPION</span>
+          <span className="roadmap-map-count">{currentIndex + 1} / {levels.length} GATES OPEN</span>
+        </div>
+
+        <div className="roadmap-path">
+          {levels.map((level: any, index: number) => {
+            const unlocked = done >= level.goal;
+            const cleared = index < currentIndex;
+            const current = index === currentIndex;
+
+            return (
+              <div
+                className={`roadmap-level ${cleared ? "cleared" : ""} ${current ? "current" : ""} ${!unlocked ? "locked" : ""}`}
+                key={level.name}
+                style={{ "--road-offset": `${index % 2 === 0 ? 0 : 42}%` } as React.CSSProperties}
+              >
+                <div className="roadmap-level-node">
+                  {cleared ? <Check size={20} /> : !unlocked ? <Lock size={18} /> : <span>{String(index + 1).padStart(2, "0")}</span>}
+                </div>
+
+                <div className="roadmap-level-card">
+                  <div className="roadmap-level-top">
+                    <span className="roadmap-level-number">GATE 0{index + 1}</span>
+                    <span className={`roadmap-level-status ${unlocked ? "open" : ""}`}>
+                      {cleared ? "CLEARED" : current ? "CURRENT LEVEL" : unlocked ? "UNLOCKED" : "LOCKED"}
+                    </span>
+                  </div>
+                  <h3>{level.title}</h3>
+                  <strong>{level.name}</strong>
+                  <p>{level.desc}</p>
+                  <div className="roadmap-level-footer">
+                    <span><Trophy size={14} /> {level.reward}</span>
+                    <span>{level.goal === 0 ? "START" : `${Math.max(0, level.goal - done)} missions left`}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="roadmap-bottom-stats">
+        <Stat label="MISSIONS COMPLETED" value={`${done}`} note="Recorded study tasks" />
+        <Stat label="CHAPTER PROGRESS" value={`${chapterProgress}%`} note="Based on topic completion" />
+      </div>
+    </section>
+  );
 }
+
 
 function Reports({tasks,sessions,setSessions}: any) {
   const [subject,setSubject] = useState<Subject>("Physics");
