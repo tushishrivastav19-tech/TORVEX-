@@ -240,3 +240,125 @@ button{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:2
  .launch-card{padding:13px 9px;gap:7px}
  .launch-card b{font-size:9px}
 }
+/* TORVEX — STUDY PLANNER 2.0 */
+.planner-v2 .planner-form,
+.planner-v2 .task-panel {
+  padding: 24px;
+}
+
+.planner-v2 .planner-form > label,
+.planner-fields label {
+  display: block;
+  margin: 16px 0 7px;
+  color: #9ba8bb;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.planner-v2 input,
+.planner-v2 select {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  color: #edf1f7;
+  background: #0a1220;
+  border: 1px solid #2a374c;
+  border-radius: 4px;
+  font: 12px Inter, sans-serif;
+}
+
+.planner-v2 input:focus,
+.planner-v2 select:focus {
+  outline: 1px solid #aebbd0;
+  border-color: #aebbd0;
+}
+
+.planner-v2 input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #d85b62;
+}
+
+.planner-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 14px;
+  margin-bottom: 20px;
+}
+
+.planner-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 9px;
+  margin: 20px 0 12px;
+}
+
+.planner-results {
+  padding: 10px 0;
+  color: #8491a7;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  border-bottom: 1px solid #202c3e;
+}
+
+.planner-task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 0;
+  border-bottom: 1px solid #202c3e;
+}
+
+.planner-task-main {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+  flex: 1;
+  cursor: pointer;
+}
+
+.planner-task-main span {
+  min-width: 0;
+}
+
+.planner-task-main b,
+.planner-task-main small {
+  display: block;
+}
+
+.planner-task-main b {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.planner-task-main small {
+  margin-top: 5px;
+  color: #8491a7;
+  font-size: 10px;
+}
+
+.planner-v2 .primary:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+@media(max-width:700px) {
+  .planner-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media(max-width:480px) {
+  .planner-fields,
+  .planner-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .planner-v2 .planner-form,
+  .planner-v2 .task-panel {
+    padding: 17px;
+  }
+}
