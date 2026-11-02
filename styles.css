@@ -110,4 +110,43 @@ button{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:2
     min-height: 135px;
   }
 }
+/* TORVEX HOME GARAGE — HERO VEHICLE */
+.car-visual {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 650px);
+  transform: perspective(900px) rotateY(-8deg);
+  filter: drop-shadow(0 25px 28px #0009);
+  animation: torvex-car-arrive 1.1s cubic-bezier(.2,.8,.2,1) both;
+}
 
+.car-visual svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+@keyframes torvex-car-arrive {
+  from {
+    opacity: 0;
+    transform: perspective(900px) translateX(45px) rotateY(-13deg);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(900px) translateX(0) rotateY(-8deg);
+  }
+}
+
+@media (max-width: 850px) {
+  .car-visual {
+    width: 120%;
+    transform: perspective(900px) rotateY(-5deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .car-visual {
+    animation: none;
+  }
+}
