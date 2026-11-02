@@ -297,72 +297,240 @@ function Reports({tasks,sessions,setSessions}: any) {
   </section>;
 }
 
-function Garage() {
-  const [selected,setSelected] = useState("Silver");
-  const paints = [{name:"Silver",color:"#cbd5e1"},{name:"Midnight",color:"#263449"},{name:"Racing Red",color:"#bd3442"},{name:"Ice Blue",color:"#83b9d5"}];
+function Garage({ selected, setSelected }: {
+  selected: string;
+  setSelected: (value: string) => void;
+}) {
+  const paints = [
+    { name: "Silver", color: "#cbd5e1" },
+    { name: "Midnight", color: "#263449" },
+    { name: "Racing Red", color: "#bd3442" },
+    { name: "Ice Blue", color: "#83b9d5" },
+    { name: "Pearl White", color: "#f1f0e9" },
+    { name: "Graphite", color: "#59616d" }
+  ];
+
+  const finish = paints.find(p => p.name === selected) || paints[0];
+
   return <section className="module-page">
-    <Banner eyebrow="TORVEX / VEHICLE COLLECTION" title="THE GARAGE" subtitle="Your collection starts here. Vehicle customisation preview."/>
+    <Banner eyebrow="TORVEX / VEHICLE COLLECTION" title="THE GARAGE"
+      subtitle="Configure your vehicle finish. Your selection is saved automatically."/>
     <div className="panel">
-      <div className="car-visual" style={{width:"100%",maxWidth:650,margin:"auto"}}>
+      <div className="car-visual" style={{ width: "100%", maxWidth: 650, margin: "auto" }}>
         <svg viewBox="0 0 760 300">
-          <path d="M75 205 L115 164 Q145 145 220 135 L300 78 Q325 58 382 59 L500 65 Q540 70 575 112 L645 148 Q680 165 690 200 L675 220 L90 225Z" fill={paints.find(p=>p.name===selected)?.color} stroke="#edf3fa" strokeWidth="3"/>
-          <path d="M250 132 L320 82 Q345 69 382 72 L487 78 Q515 82 540 137Z" fill="#101c2c" stroke="#aabbd0" strokeWidth="3"/>
-          {[230,565].map(x=><g key={x}><circle cx={x} cy="210" r="43" fill="#080d16" stroke="#9ba9bc" strokeWidth="7"/><circle cx={x} cy="210" r="25" fill="#263449" stroke="#e0e6ef" strokeWidth="3"/></g>)}
+          <defs>
+            <linearGradient id="garageGlass" x1="0" y1="0" x2="0" y2="1">
+              <stop stopColor="#526d8e"/>
+              <stop offset="1" stopColor="#080e18"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="390" cy="245" rx="280" ry="20" fill="#000" opacity=".7"/>
+          <path d="M75 205 L115 164 Q145 145 220 135 L300 78 Q325 58 382 59 L500 65 Q540 70 575 112 L645 148 Q680 165 690 200 L675 220 L90 225Z"
+            fill={finish.color} stroke="#edf3fa" strokeWidth="3"/>
+          <path d="M250 132 L320 82 Q345 69 382 72 L487 78 Q515 82 540 137Z"
+            fill="url(#garageGlass)" stroke="#aabbd0" strokeWidth="3"/>
+          <path d="M393 73 L393 134" stroke="#aabbd0" strokeWidth="3"/>
+          <path d="M110 180 L180 174 L165 192 L105 198Z" fill="#fff"/>
+          <path d="M625 164 L675 181 L680 195 L625 190Z" fill="#ed4855"/>
+          {[230,565].map(x => <g key={x}>
+            <circle cx={x} cy="210" r="43" fill="#080d16" stroke="#9ba9bc" strokeWidth="7"/>
+            <circle cx={x} cy="210" r="25" fill="#263449" stroke="#e0e6ef" strokeWidth="3"/>
+            <circle cx={x} cy="210" r="8" fill="#cbd5e1"/>
+          </g>)}
         </svg>
       </div>
-      <h3>PAINT CONFIGURATION</h3><p>Select a finish to preview the vehicle colour.</p>
-      <div className="subject-tabs">{paints.map(p=><button key={p.name} className={selected===p.name?"subject-tab selected":"subject-tab"} onClick={()=>setSelected(p.name)}><span style={{display:"inline-block",width:12,height:12,borderRadius:"50%",background:p.color,marginRight:7,verticalAlign:"middle"}}/>{p.name}</button>)}</div>
-      <p className="eyebrow">SELECTED FINISH: {selected.toUpperCase()}</p>
+      <h3>PAINT CONFIGURATION</h3>
+      <p>Choose a finish for your vehicle.</p>
+      <div className="subject-tabs">
+        {paints.map(p => <button key={p.name}
+          className={selected === p.name ? "subject-tab selected" : "subject-tab"}
+          onClick={() => setSelected(p.name)}>
+          <span style={{
+            display: "inline-block", width: 13, height: 13,
+            borderRadius: "50%", background: p.color,
+            marginRight: 8, verticalAlign: "middle",
+            border: "1px solid #718096"
+          }}/>
+          {p.name}
+        </button>)}
+      </div>
+      <p className="eyebrow">ACTIVE FINISH: {selected.toUpperCase()}</p>
+      <p className="module-status"><Check size={14}/> Selection saved automatically</p>
     </div>
-    <div className="module-grid">{["Vehicle collection","Wheel upgrades","Body customisation","Garage environments"].map((x,i)=><article className="module-card" key={x}><span className="module-number">0{i+1}</span><h3>{x}</h3><p>Expansion feature planned</p></article>)}</div>
+    <div className="module-grid">
+      {[
+        ["VEHICLE COLLECTION", "Your unlocked vehicle collection"],
+        ["WHEEL UPGRADES", "Wheel customisation is a future expansion"],
+        ["BODY CUSTOMISATION", "Body kits and aero upgrades are planned"],
+        ["SHOWROOM ENVIRONMENTS", "Showroom environments are planned"]
+      ].map((item, i) => <article className="module-card" key={item[0]}>
+        <span className="module-number">0{i + 1}</span>
+        <h3>{item[0]}</h3>
+        <p>{item[1]}</p>
+      </article>)}
+    </div>
   </section>;
 }
 
-function SimpleModule({page}: {page:string}) {
-  const [name,setName] = useState("TORVEX DRIVER");
-  const [language,setLanguage] = useState("English");
-  const [focus,setFocus] = useState(true);
-  const [playlist,setPlaylist] = useState("");
-  const [playlists,setPlaylists] = useState<string[]>([]);
-  const [challenge,setChallenge] = useState("30 DAYS");
-  if(page==="Profile & Settings") return <section className="module-page">
-    <Banner eyebrow="TORVEX / DRIVER CONFIGURATION" title="PROFILE & SETTINGS" subtitle="Manage your identity and study preferences."/>
-    <div className="panel planner-form"><h3>Driver profile</h3><label>Display name</label><input value={name} onChange={e=>setName(e.target.value)}/><label>Study language</label><select value={language} onChange={e=>setLanguage(e.target.value)}><option>English</option><option>Hindi</option><option>Hinglish</option></select><label>Challenge duration</label><select value={challenge} onChange={e=>setChallenge(e.target.value)}>{["5 DAYS","7 DAYS","30 DAYS","60 DAYS","90 DAYS","6 MONTHS","1 YEAR"].map(x=><option key={x}>{x}</option>)}</select><label className="topic-row"><input type="checkbox" checked={focus} onChange={e=>setFocus(e.target.checked)}/> Focus reminders enabled</label><p className="eyebrow">SETTINGS ARE CURRENTLY STORED FOR THIS SESSION.</p></div>
+function SimpleModule({ page, profile, setProfile, playlists, setPlaylists,
+  tasks, sessions, chapters }: any) {
+  const [playlist, setPlaylist] = useState("");
+
+  if (page === "Profile & Settings") return <section className="module-page">
+    <Banner eyebrow="TORVEX / DRIVER CONFIGURATION" title="PROFILE & SETTINGS"
+      subtitle="Your driver identity and preparation preferences."/>
+
+    <div className="panel planner-form">
+      <h3>Driver profile</h3>
+      <label>Display name</label>
+      <input value={profile.name} onChange={e =>
+        setProfile({ ...profile, name: e.target.value })}/>
+
+      <label>Study language</label>
+      <select value={profile.language} onChange={e =>
+        setProfile({ ...profile, language: e.target.value })}>
+        <option>English</option>
+        <option>Hindi</option>
+        <option>Hinglish</option>
+      </select>
+
+      <label>Challenge duration</label>
+      <select value={profile.challenge} onChange={e =>
+        setProfile({ ...profile, challenge: e.target.value })}>
+        {["5 DAYS", "7 DAYS", "30 DAYS", "60 DAYS", "90 DAYS", "6 MONTHS", "1 YEAR"].map(x =>
+          <option key={x}>{x}</option>)}
+      </select>
+
+      <label className="topic-row">
+        <input type="checkbox" checked={profile.reminders}
+          onChange={e => setProfile({ ...profile, reminders: e.target.checked })}/>
+        Focus reminders enabled
+      </label>
+      <p className="eyebrow">PROFILE SAVED AUTOMATICALLY</p>
+    </div>
   </section>;
-  if(page==="Music Room") return <section className="module-page">
-    <Banner eyebrow="TORVEX / FOCUS SOUNDTRACK" title="MUSIC ROOM" subtitle="Organise your focus playlists and open them in your music app."/>
-    <div className="panel planner-form"><h3><Music/> Saved playlists</h3><input className="planner-input" placeholder="Playlist name or Spotify link" value={playlist} onChange={e=>setPlaylist(e.target.value)}/><button className="primary" onClick={()=>{if(playlist.trim()){setPlaylists([...playlists,playlist.trim()]);setPlaylist("");}}}>SAVE PLAYLIST <Plus size={16}/></button>{playlists.map((p,i)=><div className="task-row" key={`${p}-${i}`}><span>{p}</span><button className="icon-button" onClick={()=>setPlaylists(playlists.filter((_,j)=>i!==j))}><Trash2 size={16}/></button></div>)}</div>
+
+  if (page === "Music Room") return <section className="module-page">
+    <Banner eyebrow="TORVEX / FOCUS SOUNDTRACK" title="MUSIC ROOM"
+      subtitle="Save and organise your study playlists."/>
+
+    <div className="panel planner-form">
+      <h3><Music/> Saved playlists</h3>
+      <input className="planner-input" placeholder="Playlist name or Spotify link"
+        value={playlist} onChange={e => setPlaylist(e.target.value)}/>
+      <button className="primary" onClick={() => {
+        if (playlist.trim()) {
+          setPlaylists([...playlists, {
+            id: `playlist-${Date.now()}`,
+            value: playlist.trim()
+          }]);
+          setPlaylist("");
+        }
+      }}>SAVE PLAYLIST <Plus size={16}/></button>
+
+      {playlists.map((p: any) => <div className="task-row" key={p.id}>
+        <span>{p.value}</span>
+        <div style={{ display: "flex", gap: 8 }}>
+          {p.value.startsWith("http") && <button className="icon-button"
+            onClick={() => window.open(p.value, "_blank", "noopener,noreferrer")}>
+            <Play size={16}/>
+          </button>}
+          <button className="icon-button" onClick={() =>
+            setPlaylists(playlists.filter((x: any) => x.id !== p.id))}>
+            <Trash2 size={16}/>
+          </button>
+        </div>
+      </div>)}
+      {!playlists.length && <p className="empty">No playlists saved yet.</p>}
+    </div>
   </section>;
+
+  const completed = tasks.filter((t: StudyTask) => t.completed).length;
+  const achievements = [
+    { name: "First mission", detail: "Complete your first study mission", unlocked: completed >= 1 },
+    { name: "Ten missions", detail: "Complete 10 study missions", unlocked: completed >= 10 },
+    { name: "Thirty missions", detail: "Complete 30 study missions", unlocked: completed >= 30 },
+    { name: "Sixty missions", detail: "Complete 60 study missions", unlocked: completed >= 60 },
+    { name: "First study session", detail: "Record your first study session", unlocked: sessions.length >= 1 },
+    { name: "Syllabus milestone", detail: "Complete an entire chapter", unlocked: chapters.some((c: Chapter) => c.status === "completed") }
+  ];
+
   return <section className="module-page">
-    <Banner eyebrow="TORVEX / ACHIEVEMENT VAULT" title="YOUR ACHIEVEMENTS" subtitle="Milestones earned through recorded study progress."/>
-    <div className="module-grid">{["First mission","Ten missions completed","Thirty missions completed","Sixty missions completed","First study session","Syllabus milestone"].map((x,i)=><article className="module-card" key={x}><span className="module-number">0{i+1}</span><h3>{x}</h3><p>Achievement criteria tracked from your activity.</p><span className="module-status"><Trophy size={13}/> MILESTONE</span></article>)}</div>
+    <Banner eyebrow="TORVEX / ACHIEVEMENT VAULT" title="YOUR ACHIEVEMENTS"
+      subtitle="Milestones unlock from your recorded preparation progress."/>
+
+    <div className="stats">
+      <Stat label="UNLOCKED" value={`${achievements.filter(a => a.unlocked).length}/${achievements.length}`}
+        note="Earned milestones"/>
+      <Stat label="MISSIONS COMPLETED" value={`${completed}`} note="Recorded completions"/>
+      <Stat label="STUDY SESSIONS" value={`${sessions.length}`} note="Recorded sessions"/>
+    </div>
+
+    <div className="module-grid">
+      {achievements.map((a, i) => <article className="module-card" key={a.name}>
+        <span className="module-number">0{i + 1}</span>
+        <h3>{a.name}</h3>
+        <p>{a.detail}</p>
+        <span className="module-status">
+          {a.unlocked ? <><Trophy size={14}/> UNLOCKED</> : <><Lock size={14}/> LOCKED</>}
+        </span>
+      </article>)}
+    </div>
   </section>;
 }
 
 export default function App() {
-  const [active,setActive] = useState("Home Garage");
-  const [chapters,setChapters] = usePersistentState<Chapter[]>("torvex-chapters-v1",initialChapters);
-  const [tasks,setTasks] = usePersistentState<StudyTask[]>("torvex-tasks-v1",initialTasks);
-  const [sessions,setSessions] = usePersistentState<StudySession[]>("torvex-sessions-v1",initialSessions);
+  const [active, setActive] = useState("Home Garage");
+  const [chapters, setChapters] = usePersistentState<Chapter[]>("torvex-chapters-v1", initialChapters);
+  const [tasks, setTasks] = usePersistentState<StudyTask[]>("torvex-tasks-v1", initialTasks);
+  const [sessions, setSessions] = usePersistentState<StudySession[]>("torvex-sessions-v1", initialSessions);
+
+  const [profile, setProfile] = usePersistentState("torvex-profile-v1", {
+    name: "TORVEX DRIVER",
+    language: "English",
+    challenge: "30 DAYS",
+    reminders: true
+  });
+
+  const [playlists, setPlaylists] = usePersistentState<any[]>("torvex-playlists-v1", []);
+  const [paint, setPaint] = usePersistentState("torvex-garage-paint-v1", "Silver");
 
   return <div className="shell">
     <aside className="sidebar">
-      <div className="brand"><div className="brand-mark">T</div><div><strong>TORVEX</strong><small>BUILT FOR AMBITION</small></div></div>
+      <div className="brand">
+        <div className="brand-mark">T</div>
+        <div><strong>TORVEX</strong><small>BUILT FOR AMBITION</small></div>
+      </div>
       <div className="side-label">COMMAND CENTRE</div>
-      {pages.map(item=><button key={item.name} className={active===item.name?"nav-item active":"nav-item"} onClick={()=>setActive(item.name)}><item.icon size={18}/><span>{item.name}</span></button>)}
-      <div className="sidebar-foot"><span className="status-dot"/> SYSTEM READY <span>v0.4</span></div>
+      {pages.map(item => <button key={item.name}
+        className={active === item.name ? "nav-item active" : "nav-item"}
+        onClick={() => setActive(item.name)}>
+        <item.icon size={18}/><span>{item.name}</span>
+      </button>)}
+      <div className="sidebar-foot"><span className="status-dot"/> SYSTEM READY <span>v0.5</span></div>
     </aside>
+
     <main className="main">
-      <header className="topbar"><div><span className="eyebrow">TORVEX / COMMAND</span><h1>{active}</h1></div><div className="profile"><div className="avatar">T</div><div><b>DRIVER PROFILE</b><small>ROOKIE CLASS</small></div></div></header>
-      {active==="Home Garage" && <Home navigate={setActive} tasks={tasks} chapters={chapters} sessions={sessions}/>}
-      {active==="Study Planner" && <Planner tasks={tasks} setTasks={setTasks} chapters={chapters}/>}
-      {active==="Syllabus Tracker" && <Syllabus chapters={chapters} setChapters={setChapters}/>}
-      {active==="Study Circuit" && <Circuit tasks={tasks} navigate={setActive}/>}
-      {active==="Roadmap" && <Roadmap tasks={tasks} chapters={chapters}/>}
-      {active==="Reports & Tests" && <Reports tasks={tasks} sessions={sessions} setSessions={setSessions}/>}
-      {active==="Garage & Collection" && <Garage/>}
-      {["Music Room","Achievement Vault","Profile & Settings"].includes(active) && <SimpleModule page={active}/>}
+      <header className="topbar">
+        <div><span className="eyebrow">TORVEX / COMMAND</span><h1>{active}</h1></div>
+        <div className="profile">
+          <div className="avatar">{profile.name.trim().charAt(0).toUpperCase() || "T"}</div>
+          <div><b>{profile.name || "DRIVER PROFILE"}</b><small>ROOKIE CLASS</small></div>
+        </div>
+      </header>
+
+      {active === "Home Garage" && <Home navigate={setActive} tasks={tasks} chapters={chapters} sessions={sessions}/>}
+      {active === "Study Planner" && <Planner tasks={tasks} setTasks={setTasks} chapters={chapters}/>}
+      {active === "Syllabus Tracker" && <Syllabus chapters={chapters} setChapters={setChapters}/>}
+      {active === "Study Circuit" && <Circuit tasks={tasks} navigate={setActive}/>}
+      {active === "Roadmap" && <Roadmap tasks={tasks} chapters={chapters}/>}
+      {active === "Reports & Tests" && <Reports tasks={tasks} sessions={sessions} setSessions={setSessions}/>}
+      {active === "Garage & Collection" && <Garage selected={paint} setSelected={setPaint}/>}
+      {["Music Room", "Achievement Vault", "Profile & Settings"].includes(active) &&
+        <SimpleModule page={active} profile={profile} setProfile={setProfile}
+          playlists={playlists} setPlaylists={setPlaylists}
+          tasks={tasks} sessions={sessions} chapters={chapters}/>}
       <footer>TORVEX <span>•</span> DRIVEN BY PROGRESS. DEFINED BY ACHIEVEMENT.</footer>
     </main>
   </div>;
-}
+        }
