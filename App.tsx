@@ -3,7 +3,7 @@ import { useState } from "react";
 import { usePersistentState } from "./storage";
 import {
   Activity, BookOpen, CalendarDays, CarFront, ChevronRight,
-  Gauge, LayoutDashboard, Settings, Trophy,
+  LayoutDashboard, Settings, Trophy,
   Map, BarChart3, Music, Plus, Trash2, Clock3, Target,
   Check, Lock, Play
 } from "lucide-react";
