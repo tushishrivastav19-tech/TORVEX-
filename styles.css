@@ -150,3 +150,16 @@ button{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:2
     animation: none;
   }
 }
+/* FIX: KEEP GARAGE CAR CLEAR ON MOBILE */
+@media (max-width: 850px) {
+  .car-art {
+    opacity: 1 !important;
+    width: 68%;
+    right: -8%;
+  }
+
+  .car-visual {
+    width: 120%;
+    filter: drop-shadow(0 20px 25px #000b);
+  }
+}
