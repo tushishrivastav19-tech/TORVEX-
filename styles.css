@@ -163,3 +163,80 @@ button{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:2
     filter: drop-shadow(0 20px 25px #000b);
   }
 }
+/* TORVEX PREMIUM HOME GARAGE DASHBOARD */
+.garage-dashboard{display:flex;flex-direction:column;gap:17px}
+.hero-premium{min-height:370px;background:radial-gradient(ellipse at 78% 48%,#263b58 0,transparent 42%),linear-gradient(110deg,#101a2a,#0b1321 68%,#111d30);box-shadow:inset 0 1px #ffffff0b}
+.hero-premium .hero-copy{max-width:440px}
+.hero-premium .hero-copy p{max-width:310px;line-height:1.7}
+.hero-premium .car-art{width:55%;right:1%;opacity:1}
+.hero-premium .car-visual{width:110%;max-width:760px}
+.hero-index{position:absolute;bottom:18px;left:25px;color:#718098;font:600 10px Inter;letter-spacing:2px}
+.hero-index span{color:#d85b62;margin:0 5px}
+.driver-strip{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:0;border:1px solid #273449;background:linear-gradient(110deg,#111c2d,#0b1320);border-radius:8px;padding:20px 24px}
+.driver-strip>div{padding:0 22px;border-right:1px solid #273449}
+.driver-strip>div:first-child{padding-left:0}
+.driver-strip>div:last-child{border:0}
+.driver-strip strong{display:block;font:700 25px 'Barlow Condensed';margin:7px 0;color:#f0f3f8}
+.rank-track{height:4px;background:#263246;margin:9px 0 6px;max-width:300px}
+.rank-track div{height:100%;background:linear-gradient(90deg,#aebdce,#e5eaf1);transition:width .3s}
+.driver-strip small{display:block;color:#78869b;font-size:9px;letter-spacing:1.2px}
+.driver-xp,.driver-streak{display:flex;align-items:center;gap:13px;color:#cbd5e1}
+.driver-xp b,.driver-streak b{display:block;font:700 22px 'Barlow Condensed';color:#f0f3f8}
+.dashboard-heading{display:flex;justify-content:space-between;align-items:end;margin:8px 0 0}
+.dashboard-heading h3,.quick-launch h3{font:700 23px 'Barlow Condensed';margin:5px 0 0;letter-spacing:.6px}
+.live-indicator{font-size:9px;color:#8593a8;letter-spacing:1px}
+.live-indicator i{display:inline-block;width:6px;height:6px;background:#72bd94;border-radius:50%;margin-right:7px}
+.stats-premium{margin:0}
+.stats-premium article{background:linear-gradient(145deg,#121d2e,#0d1522);padding:20px}
+.stats-premium article strong{font-size:29px}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:14px}
+.dashboard-grid .panel{padding:22px}
+.mission-panel{background:radial-gradient(ellipse at 100% 0,#1c2b42 0,transparent 55%),#0e1625}
+.mission-subject{display:block;margin-top:25px;color:#d85b62;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}
+.mission-panel>h2{font:700 30px 'Barlow Condensed';margin:9px 0 17px}
+.mission-meta{display:flex;flex-wrap:wrap;gap:17px;margin:0 0 22px;color:#9ba8bb;font-size:10px}
+.mission-meta span{display:flex;align-items:center;gap:6px}
+.daily-progress{display:flex;align-items:center;justify-content:space-between;padding:17px 0}
+.daily-progress>div:first-child b{display:block;font:700 30px 'Barlow Condensed'}
+.daily-progress>div:first-child small{color:#8491a7;font-size:9px;letter-spacing:1.2px}
+.daily-ring{width:76px;height:76px;border-radius:50%;display:grid;place-items:center}
+.daily-ring>div{width:62px;height:62px;border-radius:50%;background:#0e1625;display:grid;place-items:center;font:700 19px 'Barlow Condensed'}
+.daily-ring small{font:500 10px Inter;color:#8795aa}
+.task-check{width:23px;height:23px;display:grid;place-items:center;border:1px solid #46536a;border-radius:50%;color:#9ba8bb;flex-shrink:0}
+.task-check.completed{color:#72bd94;border-color:#72bd94}
+.daily-panel .task-row{display:flex;align-items:center;gap:11px;border-top:1px solid #202c3e;padding:12px 0}
+.daily-panel .task-row>span:nth-child(2){flex:1;min-width:0}
+.daily-panel .task-row b{display:block;font-size:11px;font-weight:600}
+.daily-panel .task-row small{display:block;color:#8190a6;font-size:9px;margin-top:4px}
+.daily-panel .task-row>small{letter-spacing:1px;white-space:nowrap}
+.text-action{display:flex;align-items:center;gap:8px;border:0;background:none;color:#d7dee9;font-size:9px;font-weight:700;letter-spacing:1.2px;padding:14px 0 0;cursor:pointer}
+.quick-launch{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.quick-launch>div{grid-column:1/-1;margin:4px 0}
+.launch-card{min-width:0;display:flex;align-items:center;gap:9px;padding:15px 12px;background:#101a2a;border:1px solid #263449;border-radius:6px;color:#cbd5e1;text-align:left;cursor:pointer;transition:.2s}
+.launch-card:hover{border-color:#9ba8bb;transform:translateY(-2px)}
+.launch-card>span{color:#d85b62;font:700 13px 'Barlow Condensed'}
+.launch-card b{font-size:10px;flex:1}
+.launch-card>svg:last-child{color:#8491a7}
+@media(max-width:850px){
+ .hero-premium{min-height:330px}
+ .hero-premium .car-art{width:60%;right:-8%;opacity:.75}
+ .driver-strip{grid-template-columns:1fr 1fr;row-gap:18px}
+ .driver-strip>div:first-child{grid-column:1/-1;border-right:0;border-bottom:1px solid #273449;padding:0 0 15px}
+ .driver-strip>div:nth-child(2){padding-left:0}
+ .dashboard-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+ .hero-premium{min-height:390px;align-items:flex-start;padding:28px 20px}
+ .hero-premium .hero-copy{max-width:100%}
+ .hero-premium .hero-copy h2{font-size:47px}
+ .hero-premium .car-art{width:92%;height:55%;top:auto;bottom:0;right:-15%;opacity:.62}
+ .hero-premium .car-visual{width:125%}
+ .hero-premium .hero-copy p{max-width:230px}
+ .driver-strip{padding:17px}
+ .driver-strip>div{padding:0 10px}
+ .driver-strip strong{font-size:22px}
+ .dashboard-heading{align-items:flex-start;gap:10px;flex-direction:column}
+ .quick-launch{grid-template-columns:1fr 1fr}
+ .launch-card{padding:13px 9px;gap:7px}
+ .launch-card b{font-size:9px}
+}
