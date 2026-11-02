@@ -46,90 +46,211 @@ function Stat({ label, value, note }: {
 }
 
 function Home({ navigate, tasks, chapters, sessions }: any) {
-  const done = tasks.filter((t: StudyTask) => t.completed).length;
-  const progress = tasks.length ? Math.round(done / tasks.length * 100) : 0;
-  const stats = getStudyStats(sessions);
+  const completed = tasks.filter((t: StudyTask) => t.completed);
   const todayTasks = tasks.filter((t: StudyTask) => t.date === today());
+  const todayDone = todayTasks.filter((t: StudyTask) => t.completed).length;
+  const dailyProgress = todayTasks.length
+    ? Math.round((todayDone / todayTasks.length) * 100)
+    : 0;
 
-  return <>
-    <section className="hero">
-      <div className="hero-copy">
-        <span className="eyebrow red">YOUR NEXT MILE STARTS HERE</span>
-        <h2>PREPARE.<br/>PROGRESS.<br/><em>PREVAIL.</em></h2>
-        <p>Your personal command centre for the road to achievement.</p>
-        <button className="primary" onClick={() => navigate("Study Planner")}>
-          START RACE <ChevronRight size={17}/>
-        </button>
-      </div>
-      <div className="car-art">
-        <div className="orbit orbit-one"/>
-        <div className="orbit orbit-two"/>
-        <div className="car-visual">
-          <svg viewBox="0 0 760 300" role="img" aria-label="Silver sports car">
-            <defs>
-              <linearGradient id="torvexMetal" x1="0" y1="0" x2="1" y2="1">
-                <stop stopColor="#fff"/><stop offset=".45" stopColor="#71839c"/>
-                <stop offset=".75" stopColor="#dce5f1"/><stop offset="1" stopColor="#26364e"/>
-              </linearGradient>
-              <linearGradient id="torvexGlass" x1="0" y1="0" x2="0" y2="1">
-                <stop stopColor="#526d8e"/><stop offset="1" stopColor="#080e18"/>
-              </linearGradient>
-            </defs>
-            <ellipse cx="390" cy="245" rx="280" ry="20" fill="#000" opacity=".7"/>
-            <path d="M75 205 L115 164 Q145 145 220 135 L300 78 Q325 58 382 59 L500 65 Q540 70 575 112 L645 148 Q680 165 690 200 L675 220 L90 225Z" fill="url(#torvexMetal)" stroke="#edf3fa" strokeWidth="3"/>
-            <path d="M250 132 L320 82 Q345 69 382 72 L487 78 Q515 82 540 137Z" fill="url(#torvexGlass)" stroke="#c1d0e3" strokeWidth="3"/>
-            <path d="M393 73 L393 134 M494 80 L540 137" stroke="#aabbd0" strokeWidth="3"/>
-            <path d="M110 180 L180 174 L165 192 L105 198Z" fill="#fff"/>
-            <path d="M625 164 L675 181 L680 195 L625 190Z" fill="#ed4855"/>
-            <path d="M130 205 L650 205" stroke="#172335" strokeWidth="8"/>
-            {[230,565].map(x => <g key={x}>
-              <circle cx={x} cy="210" r="43" fill="#080d16" stroke="#9ba9bc" strokeWidth="7"/>
-              <circle cx={x} cy="210" r="25" fill="#263449" stroke="#e0e6ef" strokeWidth="3"/>
-              <circle cx={x} cy="210" r="8" fill="#cbd5e1"/>
-            </g>)}
-            <path d="M150 153 L215 145 M590 145 L642 164" stroke="#fff" strokeWidth="2" opacity=".7"/>
-          </svg>
-        </div>
-        <span className="car-caption">TORVEX // VEHICLE 001</span>
-      </div>
-    </section>
+  const xp = completed.length * 50;
+  const rank = xp >= 3000 ? "CHAMPION" :
+    xp >= 1500 ? "ELITE DRIVER" :
+    xp >= 500 ? "PRO DRIVER" : "ROOKIE DRIVER";
 
-    <section className="stats">
-      <Stat label="CAREER RANK" value="ROOKIE DRIVER" note="Your journey begins here"/>
-      <Stat label="EXPERIENCE POINTS" value={`${done * 50} XP`} note="50 XP per completed mission"/>
-      <Stat label="DAILY PROGRESS" value={`${progress}%`} note={`${done} of ${tasks.length} tasks completed`}/>
-    </section>
+  const stats = getStudyStats(sessions);
+  const chapterProgress = chapters.length
+    ? Math.round(
+        chapters.reduce(
+          (sum: number, c: Chapter) => sum + getChapterProgress(c), 0
+        ) / chapters.length
+      )
+    : 0;
 
-    <section className="stats">
-      <Stat label="STUDY TIME" value={`${stats.totalHours} HRS`} note="Recorded sessions"/>
-      <Stat label="QUESTIONS ATTEMPTED" value={`${stats.questionsAttempted}`} note="Manually recorded"/>
-      <Stat label="SYLLABUS PROGRESS" value={`${chapters.length ? Math.round(chapters.reduce((a: number,c: Chapter) => a + getChapterProgress(c),0)/chapters.length) : 0}%`} note="Across available chapters"/>
-    </section>
+  const activeDates = new Set([
+    ...completed.map((t: StudyTask) => t.date),
+    ...sessions.map((s: StudySession) => s.date)
+  ]);
 
-    <section className="lower">
-      <div className="panel">
-        <div className="panel-head">
-          <div><span className="eyebrow">MISSION CONTROL</span><h3>Today's missions</h3></div>
-          <Gauge size={20}/>
-        </div>
-        {todayTasks.length ? todayTasks.slice(0,5).map((t: StudyTask) =>
-          <div className="task-row" key={t.id}>
-            <span>{t.title}<small>{t.subject} · {t.plannedMinutes} min</small></span>
-            {t.completed ? <Check color="#6dbb91"/> : <Clock3/>}
-          </div>
-        ) : <div className="empty"><Target size={25}/><b>No missions scheduled today</b><p>Create your first mission in Study Planner.</p></div>}
-      </div>
-      <div className="panel">
-        <div className="panel-head"><div><span className="eyebrow">QUICK ACCESS</span><h3>Launch a module</h3></div></div>
-        {["Study Planner","Study Circuit","Syllabus Tracker","Reports & Tests"].map((x,i) =>
-          <button className="quick" key={x} onClick={() => navigate(x)}>
-            <span className="quick-num">0{i+1}</span>{x}<ChevronRight size={16}/>
+  let streak = 0;
+  const cursor = new Date(`${today()}T00:00:00`);
+  if (!activeDates.has(today())) cursor.setDate(cursor.getDate() - 1);
+
+  while (activeDates.has(
+    `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}-${String(cursor.getDate()).padStart(2, "0")}`
+  )) {
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  const nextMission = tasks
+    .filter((t: StudyTask) => !t.completed)
+    .sort((a: StudyTask, b: StudyTask) => a.date.localeCompare(b.date))[0];
+
+  const nextRankXP = xp < 500 ? 500 : xp < 1500 ? 1500 : xp < 3000 ? 3000 : 5000;
+  const rankProgress = Math.min(100, Math.round((xp / nextRankXP) * 100));
+
+  return (
+    <div className="garage-dashboard">
+      <section className="hero hero-premium">
+        <div className="hero-copy">
+          <span className="eyebrow red">TORVEX PERFORMANCE DIVISION</span>
+          <h2>PREPARE.<br />PROGRESS.<br /><em>PREVAIL.</em></h2>
+          <p>Your preparation. Your pace. Your next milestone.</p>
+          <button className="primary" onClick={() => navigate("Study Planner")}>
+            ENTER MISSION CONTROL <ChevronRight size={17} />
           </button>
-        )}
-      </div>
-    </section>
-  </>;
-}
+        </div>
+
+        <div className="car-art">
+          <div className="orbit orbit-one" />
+          <div className="orbit orbit-two" />
+          <div className="car-visual">
+            <svg viewBox="0 0 760 300" role="img" aria-label="TORVEX silver performance car">
+              <defs>
+                <linearGradient id="torvexMetal" x1="0" y1="0" x2="1" y2="1">
+                  <stop stopColor="#ffffff" />
+                  <stop offset=".45" stopColor="#71839c" />
+                  <stop offset=".75" stopColor="#dce5f1" />
+                  <stop offset="1" stopColor="#26364e" />
+                </linearGradient>
+                <linearGradient id="torvexGlass" x1="0" y1="0" x2="0" y2="1">
+                  <stop stopColor="#526d8e" />
+                  <stop offset="1" stopColor="#080e18" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="390" cy="245" rx="280" ry="20" fill="#000" opacity=".7" />
+              <path d="M75 205 L115 164 Q145 145 220 135 L300 78 Q325 58 382 59 L500 65 Q540 70 575 112 L645 148 Q680 165 690 200 L675 220 L90 225Z"
+                fill="url(#torvexMetal)" stroke="#edf3fa" strokeWidth="3" />
+              <path d="M250 132 L320 82 Q345 69 382 72 L487 78 Q515 82 540 137Z"
+                fill="url(#torvexGlass)" stroke="#c1d0e3" strokeWidth="3" />
+              <path d="M393 73 L393 134 M494 80 L540 137" stroke="#aabbd0" strokeWidth="3" />
+              <path d="M110 180 L180 174 L165 192 L105 198Z" fill="#fff" />
+              <path d="M625 164 L675 181 L680 195 L625 190Z" fill="#ed4855" />
+              <path d="M130 205 L650 205" stroke="#172335" strokeWidth="8" />
+              {[230, 565].map(x => (
+                <g key={x}>
+                  <circle cx={x} cy="210" r="43" fill="#080d16" stroke="#9ba9bc" strokeWidth="7" />
+                  <circle cx={x} cy="210" r="25" fill="#263449" stroke="#e0e6ef" strokeWidth="3" />
+                  <circle cx={x} cy="210" r="8" fill="#cbd5e1" />
+                </g>
+              ))}
+              <path d="M150 153 L215 145 M590 145 L642 164" stroke="#fff" strokeWidth="2" opacity=".7" />
+            </svg>
+          </div>
+          <span className="car-caption">TORVEX // PERFORMANCE SERIES</span>
+        </div>
+        <div className="hero-index">01 <span>/</span> COMMAND</div>
+      </section>
+
+      <section className="driver-strip">
+        <div>
+          <span className="eyebrow">CURRENT CAREER RANK</span>
+          <strong>{rank}</strong>
+          <div className="rank-track"><div style={{ width: `${rankProgress}%` }} /></div>
+          <small>{xp} / {nextRankXP} XP TO NEXT RANK</small>
+        </div>
+        <div className="driver-xp">
+          <Trophy size={21} />
+          <span><b>{xp} XP</b><small>EXPERIENCE POINTS</small></span>
+        </div>
+        <div className="driver-streak">
+          <Activity size={21} />
+          <span><b>{streak} DAYS</b><small>ACTIVE STREAK</small></span>
+        </div>
+      </section>
+
+      <section className="dashboard-heading">
+        <div>
+          <span className="eyebrow">LIVE PERFORMANCE</span>
+          <h3>YOUR COMMAND OVERVIEW</h3>
+        </div>
+        <span className="live-indicator"><i /> DATA FROM YOUR ACTIVITY</span>
+      </section>
+
+      <section className="stats stats-premium">
+        <Stat label="TODAY'S PROGRESS" value={`${dailyProgress}%`}
+          note={`${todayDone} of ${todayTasks.length} missions completed`} />
+        <Stat label="TOTAL STUDY TIME" value={`${stats.totalHours} HRS`}
+          note="Recorded study sessions" />
+        <Stat label="SYLLABUS PROGRESS" value={`${chapterProgress}%`}
+          note={`${chapters.length} chapters currently tracked`} />
+      </section>
+
+      <section className="dashboard-grid">
+        <div className="panel mission-panel">
+          <div className="panel-head">
+            <div><span className="eyebrow">NEXT OBJECTIVE</span><h3>UPCOMING MISSION</h3></div>
+            <Target size={21} />
+          </div>
+
+          {nextMission ? (
+            <>
+              <span className="mission-subject">{nextMission.subject} / {nextMission.activity}</span>
+              <h2>{nextMission.title}</h2>
+              <div className="mission-meta">
+                <span><Clock3 size={15} /> {nextMission.plannedMinutes} MIN</span>
+                <span><Target size={15} /> {nextMission.questionTarget} QUESTIONS</span>
+              </div>
+              <button className="primary" onClick={() => navigate("Study Planner")}>
+                VIEW MISSION <ChevronRight size={16} />
+              </button>
+            </>
+          ) : (
+            <div className="empty">
+              <Check size={26} />
+              <b>ALL CLEAR</b>
+              <p>No pending missions. Create your next objective.</p>
+              <button className="primary" onClick={() => navigate("Study Planner")}>
+                CREATE MISSION <Plus size={15} />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="panel daily-panel">
+          <div className="panel-head">
+            <div><span className="eyebrow">TODAY'S SCHEDULE</span><h3>MISSION CHECKLIST</h3></div>
+            <CalendarDays size={20} />
+          </div>
+          <div className="daily-progress">
+            <div><b>{dailyProgress}%</b><small>DAILY COMPLETION</small></div>
+            <div className="daily-ring" style={{ background: `conic-gradient(#d85b62 ${dailyProgress * 3.6}deg, #263246 0deg)` }}>
+              <div>{todayDone}<small>/{todayTasks.length}</small></div>
+            </div>
+          </div>
+          {todayTasks.slice(0, 4).map((t: StudyTask) => (
+            <div className="task-row" key={t.id}>
+              <span className={t.completed ? "task-check completed" : "task-check"}>
+                {t.completed ? <Check size={13} /> : <Clock3 size={13} />}
+              </span>
+              <span><b>{t.title}</b><small>{t.subject} · {t.plannedMinutes} min</small></span>
+              <small>{t.completed ? "DONE" : "PENDING"}</small>
+            </div>
+          ))}
+          {!todayTasks.length && <p className="empty">No missions scheduled for today yet.</p>}
+          <button className="text-action" onClick={() => navigate("Study Planner")}>
+            OPEN STUDY PLANNER <ChevronRight size={15} />
+          </button>
+        </div>
+      </section>
+
+      <section className="quick-launch">
+        <div><span className="eyebrow">YOUR NEXT MOVE</span><h3>CHOOSE YOUR DESTINATION</h3></div>
+        {[
+          ["01", "Study Planner", CalendarDays],
+          ["02", "Syllabus Tracker", BookOpen],
+          ["03", "Reports & Tests", BarChart3],
+          ["04", "Garage & Collection", CarFront]
+        ].map(([number, label, Icon]: any) => (
+          <button className="launch-card" key={label} onClick={() => navigate(label)}>
+            <span>{number}</span><Icon size={19} /><b>{label}</b><ChevronRight size={15} />
+          </button>
+        ))}
+      </section>
+    </div>
+  );
+            }
 
 function Planner({ tasks, setTasks, chapters }: any) {
   const [title,setTitle] = useState("");
