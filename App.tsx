@@ -60,7 +60,53 @@ function Home({ navigate, tasks }: {
       <div className="car-art">
         <div className="orbit orbit-one"/>
         <div className="orbit orbit-two"/>
-        <div className="car-symbol"><CarFront size={118} strokeWidth={0.8}/></div>
+        <div className="car-visual">
+  <svg viewBox="0 0 760 300">
+    <defs>
+      <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#f5f7fa"/>
+        <stop offset="45%" stopColor="#66758a"/>
+        <stop offset="75%" stopColor="#dce3ec"/>
+        <stop offset="100%" stopColor="#38465a"/>
+      </linearGradient>
+      <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+        <stop stopColor="#40536b"/>
+        <stop offset="100%" stopColor="#080e18"/>
+      </linearGradient>
+    </defs>
+
+    <ellipse cx="390" cy="245" rx="280" ry="20" fill="#000" opacity=".65"/>
+
+    <path d="M75 205 L115 164 Q145 145 220 135 L300 78 Q325 58 382 59 L500 65 Q540 70 575 112 L645 148 Q680 165 690 200 L675 220 L90 225Z"
+      fill="url(#metal)" stroke="#e8edf5" strokeWidth="2"/>
+
+    <path d="M250 132 L320 82 Q345 69 382 72 L487 78 Q515 82 540 137Z"
+      fill="url(#glass)" stroke="#aab8ca" strokeWidth="2"/>
+
+    <path d="M393 73 L393 134 M494 80 L540 137"
+      stroke="#aab8ca" strokeWidth="3"/>
+
+    <path d="M110 180 L180 174 L165 192 L105 198Z"
+      fill="#fff"/>
+
+    <path d="M625 164 L675 181 L680 195 L625 190Z"
+      fill="#e34d56"/>
+
+    <path d="M130 205 L650 205"
+      stroke="#172335" strokeWidth="8"/>
+
+    {[230,565].map((x) => (
+      <g key={x}>
+        <circle cx={x} cy="210" r="43" fill="#080d16" stroke="#9ba9bc" strokeWidth="7"/>
+        <circle cx={x} cy="210" r="25" fill="#263449" stroke="#e0e6ef" strokeWidth="3"/>
+        <circle cx={x} cy="210" r="8" fill="#cbd5e1"/>
+      </g>
+    ))}
+
+    <path d="M150 153 L215 145 M590 145 L642 164"
+      stroke="#fff" strokeWidth="2" opacity=".6"/>
+  </svg>
+</div>
         <span className="car-caption">GARAGE // VEHICLE 001</span>
       </div>
     </section>
