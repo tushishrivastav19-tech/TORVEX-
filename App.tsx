@@ -252,71 +252,224 @@ function Home({ navigate, tasks, chapters, sessions }: any) {
   );
             }
 
+
 function Planner({ tasks, setTasks, chapters }: any) {
-  const [title,setTitle] = useState("");
-  const [subject,setSubject] = useState<Subject>("Physics");
-  const [chapterId,setChapterId] = useState("");
-  const [minutes,setMinutes] = useState(60);
-  const [questions,setQuestions] = useState(30);
-  const [activity,setActivity] = useState<StudyTask["activity"]>("questions");
+  const [title, setTitle] = useState("");
+  const [subject, setSubject] = useState<Subject>("Physics");
+  const [chapterId, setChapterId] = useState("");
+  const [minutes, setMinutes] = useState(60);
+  const [questions, setQuestions] = useState(30);
+  const [activity, setActivity] = useState<StudyTask["activity"]>("questions");
+  const [search, setSearch] = useState("");
+  const [subjectFilter, setSubjectFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [sortBy, setSortBy] = useState("date");
+  const [selectedDate, setSelectedDate] = useState(today());
+
   const available = chapters.filter((c: Chapter) => c.subject === subject);
 
   function addTask() {
     if (!title.trim()) return;
+
     const task: StudyTask = {
-      id: `task-${Date.now()}`, title: title.trim(), subject,
+      id: `task-${Date.now()}`,
+      title: title.trim(),
+      subject,
       chapterId: chapterId || available[0]?.id || "",
-      activity, plannedMinutes: minutes, questionTarget: questions,
-      completed: false, date: today(), notes: ""
+      activity,
+      plannedMinutes: minutes,
+      questionTarget: questions,
+      completed: false,
+      date: selectedDate,
+      notes: ""
     };
-    setTasks([...tasks,task]); setTitle("");
+
+    setTasks([...tasks, task]);
+    setTitle("");
+    setQuestions(30);
   }
 
   function toggle(id: string) {
-    setTasks(tasks.map((t: StudyTask) => t.id === id ? {...t,completed:!t.completed} : t));
+    setTasks(tasks.map((t: StudyTask) =>
+      t.id === id ? { ...t, completed: !t.completed } : t
+    ));
   }
 
-  return <section className="module-page">
-    <Banner eyebrow="TORVEX / MISSION CONTROL" title="YOUR DAILY MISSION" subtitle="Plan your work. Complete missions. Build consistency."/>
-    <div className="stats">
-      <Stat label="TOTAL MISSIONS" value={`${tasks.length}`} note="All recorded tasks"/>
-      <Stat label="COMPLETED" value={`${tasks.filter((t: StudyTask) => t.completed).length}`} note="Completed missions"/>
-      <Stat label="PENDING" value={`${tasks.filter((t: StudyTask) => !t.completed).length}`} note="Missions remaining"/>
-    </div>
-    <div className="panel planner-form">
-      <h3><Plus size={18}/> Create Study Mission</h3>
-      <input className="planner-input" placeholder="Mission title..." value={title} onChange={e => setTitle(e.target.value)}/>
-      <label>Subject</label>
-      <select value={subject} onChange={e => {setSubject(e.target.value as Subject);setChapterId("");}}>
-        {subjects.map(s => <option key={s}>{s}</option>)}
-      </select>
-      <label>Chapter</label>
-      <select value={chapterId} onChange={e => setChapterId(e.target.value)}>
-        {available.map((c: Chapter) => <option key={c.id} value={c.id}>{c.name}</option>)}
-      </select>
-      <label>Activity</label>
-      <select value={activity} onChange={e => setActivity(e.target.value as StudyTask["activity"])}>
-        <option value="theory">Theory</option><option value="questions">Question practice</option>
-        <option value="pyq">PYQs</option><option value="revision">Revision</option>
-        <option value="mock-test">Mock test</option><option value="error-analysis">Error analysis</option>
-      </select>
-      <label>Planned duration (minutes)</label>
-      <input type="number" min="1" value={minutes} onChange={e => setMinutes(Math.max(1,Number(e.target.value)))}/>
-      <label>Question target</label>
-      <input type="number" min="0" value={questions} onChange={e => setQuestions(Math.max(0,Number(e.target.value)))}/>
-      <button className="primary" onClick={addTask}>ADD MISSION <Plus size={16}/></button>
-    </div>
-    <div className="panel task-panel">
-      <div className="panel-head"><div><span className="eyebrow">MISSION LOG</span><h3>All missions</h3></div><strong>{tasks.filter((t: StudyTask) => t.completed).length}/{tasks.length}</strong></div>
-      {tasks.map((t: StudyTask) => <div className="task-row" key={t.id}>
-        <label><input type="checkbox" checked={t.completed} onChange={() => toggle(t.id)}/>
-          <span className={t.completed ? "topic-done" : ""}><b>{t.title}</b><small>{t.subject} · {t.activity} · {t.plannedMinutes} min · {t.questionTarget} questions</small></span>
-        </label>
-        <button className="icon-button" aria-label="Delete mission" onClick={() => setTasks(tasks.filter((x: StudyTask) => x.id !== t.id))}><Trash2 size={16}/></button>
-      </div>)}
-      {!tasks.length && <p className="empty">Your mission log is empty.</p>}
-    </div>
-  </section>;
+  const filtered = tasks
+    .filter((t: StudyTask) =>
+      subjectFilter === "All" || t.subject === subjectFilter
+    )
+    .filter((t: StudyTask) =>
+      statusFilter === "All" ||
+      (statusFilter === "Completed" ? t.completed : !t.completed)
+    )
+    .filter((t: StudyTask) =>
+      `${t.title} ${t.activity} ${t.subject}`.toLowerCase()
+        .includes(search.toLowerCase())
+    )
+    .sort((a: StudyTask, b: StudyTask) => {
+      if (sortBy === "date") return a.date.localeCompare(b.date);
+      if (sortBy === "subject") return a.subject.localeCompare(b.subject);
+      if (sortBy === "duration") return b.plannedMinutes - a.plannedMinutes;
+      return a.title.localeCompare(b.title);
+    });
+
+  const completed = tasks.filter((t: StudyTask) => t.completed).length;
+  const pending = tasks.length - completed;
+
+  return (
+    <section className="module-page planner-v2">
+      <Banner
+        eyebrow="TORVEX / MISSION CONTROL"
+        title="YOUR DAILY MISSION"
+        subtitle="Plan your work. Complete missions. Build consistency."
+      />
+
+      <div className="stats">
+        <Stat label="TOTAL MISSIONS" value={`${tasks.length}`} note="All recorded tasks" />
+        <Stat label="COMPLETED" value={`${completed}`} note="Completed missions" />
+        <Stat label="PENDING" value={`${pending}`} note="Missions remaining" />
+      </div>
+
+      <div className="panel planner-form">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">MISSION BUILDER</span>
+            <h3>Create a new mission</h3>
+          </div>
+          <Plus size={20} />
+        </div>
+
+        <label>Mission title</label>
+        <input
+          className="planner-input"
+          placeholder="Example: Electrostatics — PYQ practice"
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+        />
+
+        <div className="planner-fields">
+          <div>
+            <label>Subject</label>
+            <select value={subject} onChange={e => {
+              setSubject(e.target.value as Subject);
+              setChapterId("");
+            }}>
+              {subjects.map(s => <option key={s}>{s}</option>)}
+            </select>
+          </div>
+          <div>
+            <label>Chapter</label>
+            <select value={chapterId} onChange={e => setChapterId(e.target.value)}>
+              <option value="">Select chapter</option>
+              {available.map((c: Chapter) =>
+                <option key={c.id} value={c.id}>{c.name}</option>
+              )}
+            </select>
+          </div>
+          <div>
+            <label>Activity</label>
+            <select value={activity} onChange={e =>
+              setActivity(e.target.value as StudyTask["activity"])
+            }>
+              <option value="theory">Theory</option>
+              <option value="questions">Question practice</option>
+              <option value="pyq">PYQs</option>
+              <option value="revision">Revision</option>
+              <option value="mock-test">Mock test</option>
+              <option value="error-analysis">Error analysis</option>
+            </select>
+          </div>
+          <div>
+            <label>Mission date</label>
+            <input type="date" value={selectedDate}
+              onChange={e => setSelectedDate(e.target.value)} />
+          </div>
+          <div>
+            <label>Duration (minutes)</label>
+            <input type="number" min="1" value={minutes}
+              onChange={e => setMinutes(Math.max(1, Number(e.target.value)))} />
+          </div>
+          <div>
+            <label>Question target</label>
+            <input type="number" min="0" value={questions}
+              onChange={e => setQuestions(Math.max(0, Number(e.target.value)))} />
+          </div>
+        </div>
+
+        <button className="primary" onClick={addTask} disabled={!title.trim()}>
+          ADD MISSION <Plus size={16} />
+        </button>
+      </div>
+
+      <div className="panel task-panel">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">MISSION DATABASE</span>
+            <h3>All missions</h3>
+          </div>
+          <strong>{completed}/{tasks.length}</strong>
+        </div>
+
+        <div className="planner-filters">
+          <input
+            placeholder="Search missions..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <select value={subjectFilter} onChange={e => setSubjectFilter(e.target.value)}>
+            <option>All</option>
+            {subjects.map(s => <option key={s}>{s}</option>)}
+          </select>
+          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+            <option>All</option>
+            <option>Pending</option>
+            <option>Completed</option>
+          </select>
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
+            <option value="date">Sort: Date</option>
+            <option value="subject">Sort: Subject</option>
+            <option value="duration">Sort: Duration</option>
+            <option value="title">Sort: Name</option>
+          </select>
+        </div>
+
+        <div className="planner-results">
+          SHOWING {filtered.length} OF {tasks.length} MISSIONS
+        </div>
+
+        {filtered.map((t: StudyTask) => (
+          <div className="task-row planner-task" key={t.id}>
+            <label className="planner-task-main">
+              <input type="checkbox" checked={t.completed}
+                onChange={() => toggle(t.id)} />
+              <span className={t.completed ? "topic-done" : ""}>
+                <b>{t.title}</b>
+                <small>
+                  {t.subject} · {t.activity} · {t.date}
+                </small>
+                <small>
+                  {t.plannedMinutes} min · {t.questionTarget} questions
+                </small>
+              </span>
+            </label>
+            <button className="icon-button" aria-label="Delete mission"
+              onClick={() => setTasks(tasks.filter((x: StudyTask) => x.id !== t.id))}>
+              <Trash2 size={16} />
+            </button>
+          </div>
+        ))}
+
+        {!filtered.length && (
+          <div className="empty">
+            <Target size={25} />
+            <b>No matching missions</b>
+            <p>Try changing your filters or create a new mission.</p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
 }
 
 function Syllabus({ chapters,setChapters }: any) {
