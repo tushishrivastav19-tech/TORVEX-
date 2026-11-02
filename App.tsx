@@ -495,19 +495,166 @@ function Syllabus({ chapters,setChapters }: any) {
   </section>;
 }
 
-function Circuit({tasks,navigate}: any) {
-  const sorted = [...tasks].sort((a: StudyTask,b: StudyTask) => a.date.localeCompare(b.date));
-  return <section className="module-page">
-    <Banner eyebrow="TORVEX / STUDY CIRCUIT" title="THE STUDY TRACK" subtitle="Every checkpoint represents a real mission. Complete tasks to move forward."/>
-    <div className="panel">
-      <div className="panel-head"><div><span className="eyebrow">CHECKPOINTS</span><h3>Your mission route</h3></div><Activity/></div>
-      {!sorted.length && <div className="empty"><Target/><b>No checkpoints yet</b><p>Add missions to your Study Planner to build your circuit.</p><button className="primary" onClick={() => navigate("Study Planner")}>CREATE MISSIONS</button></div>}
-      {sorted.map((t: StudyTask,i: number) => <div className="task-row" key={t.id}>
-        <span className="quick-num">0{i+1}</span><span><b>{t.title}</b><small>{t.subject} · {t.date} · {t.plannedMinutes} min</small></span>
-        <span className="module-status">{t.completed ? <><Check/> COMPLETE</> : <><Lock/> UPCOMING</>}</span>
-      </div>)}
-    </div>
-  </section>;
+function Circuit({ tasks, setTasks, navigate }: any) {
+  const sorted = [...tasks].sort((a: StudyTask, b: StudyTask) =>
+    a.date.localeCompare(b.date)
+  );
+
+  const completed = sorted.filter((t: StudyTask) => t.completed).length;
+  const pending = sorted.length - completed;
+  const progress = sorted.length
+    ? Math.round((completed / sorted.length) * 100)
+    : 0;
+
+  const nextIndex = sorted.findIndex((t: StudyTask) => !t.completed);
+  const nextMission = nextIndex >= 0 ? sorted[nextIndex] : null;
+
+  function toggleTask(id: string) {
+    setTasks(tasks.map((t: StudyTask) =>
+      t.id === id ? { ...t, completed: !t.completed } : t
+    ));
+  }
+
+  return (
+    <section className="module-page circuit-v2">
+      <Banner
+        eyebrow="TORVEX / STUDY CIRCUIT"
+        title="THE STUDY TRACK"
+        subtitle="Every checkpoint is a real study mission. Complete your objectives and move along your preparation route."
+      />
+
+      <div className="circuit-stats">
+        <Stat label="TOTAL CHECKPOINTS" value={`${sorted.length}`} note="Your mission route" />
+        <Stat label="COMPLETED" value={`${completed}`} note="Objectives cleared" />
+        <Stat label="REMAINING" value={`${pending}`} note="Still on the track" />
+      </div>
+
+      <section className="panel circuit-overview">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">CAREER PROGRESS</span>
+            <h3>Your route to the finish</h3>
+          </div>
+          <Activity size={21} />
+        </div>
+
+        <div className="circuit-progress-copy">
+          <strong>{progress}%</strong>
+          <span>{completed} of {sorted.length} checkpoints cleared</span>
+        </div>
+
+        <div className="circuit-progress-track">
+          <div style={{ width: `${progress}%` }} />
+        </div>
+
+        {nextMission ? (
+          <div className="circuit-next">
+            <div>
+              <span className="eyebrow red">NEXT CHECKPOINT</span>
+              <h3>{nextMission.title}</h3>
+              <p>
+                {nextMission.subject} · {nextMission.activity} ·
+                {" "}{nextMission.plannedMinutes} minutes
+              </p>
+            </div>
+            <button className="primary" onClick={() => navigate("Study Planner")}>
+              OPEN MISSION <ChevronRight size={16} />
+            </button>
+          </div>
+        ) : (
+          <div className="circuit-finished">
+            <Check size={22} />
+            <div>
+              <b>{sorted.length ? "ROUTE CLEARED" : "READY TO START"}</b>
+              <p>
+                {sorted.length
+                  ? "Every checkpoint on your current route is complete."
+                  : "Create your first mission to build your study circuit."}
+              </p>
+            </div>
+            <button className="primary" onClick={() => navigate("Study Planner")}>
+              {sorted.length ? "PLAN NEXT ROUTE" : "CREATE MISSION"}
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
+      </section>
+
+      <section className="panel circuit-route">
+        <div className="panel-head">
+          <div>
+            <span className="eyebrow">MISSION CHECKPOINTS</span>
+            <h3>Your study route</h3>
+          </div>
+          <span className="circuit-route-count">
+            {completed}/{sorted.length} CLEARED
+          </span>
+        </div>
+
+        {!sorted.length ? (
+          <div className="empty">
+            <Target size={28} />
+            <b>Your track is waiting</b>
+            <p>Add missions in Study Planner and they will appear here automatically.</p>
+            <button className="primary" onClick={() => navigate("Study Planner")}>
+              BUILD MY ROUTE <ChevronRight size={16} />
+            </button>
+          </div>
+        ) : (
+          <div className="circuit-list">
+            {sorted.map((t: StudyTask, i: number) => {
+              const isNext = i === nextIndex;
+              const status = t.completed
+                ? "cleared"
+                : isNext
+                  ? "current"
+                  : "upcoming";
+
+              return (
+                <article className={`circuit-checkpoint ${status}`} key={t.id}>
+                  <div className="circuit-node-column">
+                    <div className="circuit-node">
+                      {t.completed ? <Check size={17} /> : String(i + 1).padStart(2, "0")}
+                    </div>
+                    {i !== sorted.length - 1 && <div className="circuit-connector" />}
+                  </div>
+
+                  <div className="circuit-checkpoint-content">
+                    <div className="circuit-checkpoint-top">
+                      <span className="eyebrow">
+                        CHECKPOINT {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className={`circuit-status ${status}`}>
+                        {t.completed ? "CLEARED" : isNext ? "UP NEXT" : "UPCOMING"}
+                      </span>
+                    </div>
+
+                    <h3>{t.title}</h3>
+                    <p>
+                      {t.subject} · {t.activity} · {t.date}
+                    </p>
+
+                    <div className="circuit-meta">
+                      <span><Clock3 size={13} /> {t.plannedMinutes} MIN</span>
+                      <span><Target size={13} /> {t.questionTarget} QUESTIONS</span>
+                    </div>
+                  </div>
+
+                  <button
+                    className={t.completed ? "circuit-action is-done" : "circuit-action"}
+                    onClick={() => toggleTask(t.id)}
+                    aria-label={t.completed ? "Mark mission pending" : "Complete mission"}
+                  >
+                    {t.completed ? <Check size={16} /> : "COMPLETE"}
+                  </button>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    </section>
+  );
 }
 
 function Roadmap({tasks,chapters}: any) {
@@ -796,7 +943,9 @@ export default function App() {
       {active === "Home Garage" && <Home navigate={setActive} tasks={tasks} chapters={chapters} sessions={sessions}/>}
       {active === "Study Planner" && <Planner tasks={tasks} setTasks={setTasks} chapters={chapters}/>}
       {active === "Syllabus Tracker" && <Syllabus chapters={chapters} setChapters={setChapters}/>}
-      {active === "Study Circuit" && <Circuit tasks={tasks} navigate={setActive}/>}
+      {active === "Study Circuit" && (
+  <Circuit tasks={tasks} setTasks={setTasks} navigate={setActive} />
+)}
       {active === "Roadmap" && <Roadmap tasks={tasks} chapters={chapters}/>}
       {active === "Reports & Tests" && <Reports tasks={tasks} sessions={sessions} setSessions={setSessions}/>}
       {active === "Garage & Collection" && <Garage selected={paint} setSelected={setPaint}/>}
