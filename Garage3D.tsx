@@ -151,4 +151,4 @@ export default function Garage3D({
   );
 }
 
-useGLTF.preload("/models/spectral_gt_rs_game_ready.glb");
+useGLTF.preload(`${import.meta.env.BASE_URL}models/spectral_gt_rs_game_ready.glb`);
