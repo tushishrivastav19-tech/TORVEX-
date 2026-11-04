@@ -151,4 +151,4 @@ export default function Garage3D({
   );
 }
 
-useGLTF.preload("/models/torvex-showroom-car.glb");
+useGLTF.preload("/models/spectral_gt_rs_game_ready.glb");
