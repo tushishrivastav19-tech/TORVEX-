@@ -816,7 +816,10 @@ function Garage({ selected, setSelected }: {
     <Banner eyebrow="TORVEX / VEHICLE COLLECTION" title="THE GARAGE"
       subtitle="Configure your vehicle finish. Your selection is saved automatically."/>
     <div className="panel">
-      <div className="car-visual" style={{ width: "100%", maxWidth: 650, margin: "auto" }}>
+      <Garage3D
+  modelPath="/models/spectral_gt_rs_game_ready.glb"
+  paint={finish.color}
+/>
         <svg viewBox="0 0 760 300">
           <defs>
             <linearGradient id="garageGlass" x1="0" y1="0" x2="0" y2="1">
