@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import Garage3D from "./Garage3D";
 import { usePersistentState } from "./storage";
 import {
   Activity, BookOpen, CalendarDays, CarFront, ChevronRight,
