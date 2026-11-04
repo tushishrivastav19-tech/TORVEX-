@@ -817,7 +817,7 @@ function Garage({ selected, setSelected }: {
       subtitle="Configure your vehicle finish. Your selection is saved automatically."/>
     <div className="panel">
       <Garage3D
-  modelPath="/models/spectral_gt_rs_game_ready.glb"
+  modelPath={`${import.meta.env.BASE_URL}models/spectral_gt_rs_game_ready.glb`}
   paint={finish.color}
 />
       <h3>PAINT CONFIGURATION</h3>
