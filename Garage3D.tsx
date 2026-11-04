@@ -30,7 +30,7 @@ function Vehicle({ modelPath, paint }: VehicleProps) {
     const materials = Array.isArray(material) ? material : [material];
 
     materials.forEach((item) => {
-      if (item instanceof THREE.MeshStandardMaterial) {
+      if (item instanceof THREE.MeshPhysicalMaterial) {
         item.envMapIntensity = 1.4;
 
         if (item.name.toLowerCase().includes("paint")) {
