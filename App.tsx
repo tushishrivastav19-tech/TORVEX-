@@ -820,28 +820,6 @@ function Garage({ selected, setSelected }: {
   modelPath="/models/spectral_gt_rs_game_ready.glb"
   paint={finish.color}
 />
-        <svg viewBox="0 0 760 300">
-          <defs>
-            <linearGradient id="garageGlass" x1="0" y1="0" x2="0" y2="1">
-              <stop stopColor="#526d8e"/>
-              <stop offset="1" stopColor="#080e18"/>
-            </linearGradient>
-          </defs>
-          <ellipse cx="390" cy="245" rx="280" ry="20" fill="#000" opacity=".7"/>
-          <path d="M75 205 L115 164 Q145 145 220 135 L300 78 Q325 58 382 59 L500 65 Q540 70 575 112 L645 148 Q680 165 690 200 L675 220 L90 225Z"
-            fill={finish.color} stroke="#edf3fa" strokeWidth="3"/>
-          <path d="M250 132 L320 82 Q345 69 382 72 L487 78 Q515 82 540 137Z"
-            fill="url(#garageGlass)" stroke="#aabbd0" strokeWidth="3"/>
-          <path d="M393 73 L393 134" stroke="#aabbd0" strokeWidth="3"/>
-          <path d="M110 180 L180 174 L165 192 L105 198Z" fill="#fff"/>
-          <path d="M625 164 L675 181 L680 195 L625 190Z" fill="#ed4855"/>
-          {[230,565].map(x => <g key={x}>
-            <circle cx={x} cy="210" r="43" fill="#080d16" stroke="#9ba9bc" strokeWidth="7"/>
-            <circle cx={x} cy="210" r="25" fill="#263449" stroke="#e0e6ef" strokeWidth="3"/>
-            <circle cx={x} cy="210" r="8" fill="#cbd5e1"/>
-          </g>)}
-        </svg>
-      </div>
       <h3>PAINT CONFIGURATION</h3>
       <p>Choose a finish for your vehicle.</p>
       <div className="subject-tabs">
