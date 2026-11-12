@@ -16,8 +16,6 @@ type VehicleProps = {
 };
 
 function Vehicle({ modelPath, paint }: VehicleProps) {
-
-function Vehicle({ modelPath, paint }: VehicleProps) {
   const { scene } = useGLTF(modelPath);
   const vehicle = scene.clone(true);
 
