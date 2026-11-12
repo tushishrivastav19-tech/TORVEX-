@@ -1113,6 +1113,16 @@ function SimpleModule({ page, profile, setProfile, playlists, setPlaylists,
       <button className="primary" onClick={exportBackup}>
   EXPORT DATA BACKUP
 </button>
+            <label>IMPORT DATA BACKUP (.JSON)</label>
+      <input
+        type="file"
+        accept=".json,application/json"
+        className="planner-input"
+        onChange={importBackup}
+      />
+      <p className="eyebrow">
+        RESTORE YOUR SAVED TASKS, SYLLABUS AND PROFILE
+      </p>
     </div>
   </section>;
 
