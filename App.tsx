@@ -1033,7 +1033,52 @@ function SimpleModule({ page, profile, setProfile, playlists, setPlaylists,
     link.click();
     URL.revokeObjectURL(url);
     }
+  function importBackup(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(String(reader.result));
+
+        if (
+          data.app !== "TORVEX" ||
+          !Array.isArray(data.tasks) ||
+          !Array.isArray(data.chapters) ||
+          !Array.isArray(data.sessions) ||
+          !Array.isArray(data.playlists) ||
+          !data.profile ||
+          typeof data.profile !== "object"
+        ) {
+          throw new Error("Invalid backup");
+        }
+
+        if (!window.confirm("Restore this backup? Current app data will be replaced.")) {
+          return;
+        }
+
+        setTasks(data.tasks);
+        setChapters(data.chapters);
+        setSessions(data.sessions);
+        setProfile(data.profile);
+        setPlaylists(data.playlists);
+
+        if (typeof data.garagePaint === "string") {
+          setPaint(data.garagePaint);
+        }
+
+        alert("TORVEX backup restored successfully!");
+      } catch {
+        alert("Invalid or damaged TORVEX backup file.");
+      } finally {
+        event.target.value = "";
+      }
+    };
+
+    reader.readAsText(file);
+  }
   if (page === "Profile & Settings") return <section className="module-page">
     <Banner eyebrow="TORVEX / DRIVER CONFIGURATION" title="PROFILE & SETTINGS"
       subtitle="Your driver identity and preparation preferences."/>
