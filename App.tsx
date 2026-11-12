@@ -276,24 +276,38 @@ function Planner({ tasks, setTasks, chapters }: any) {
   const available = chapters.filter((c: Chapter) => c.subject === subject);
 
   function addTask() {
-    if (!title.trim()) return;
+  if (!title.trim()) {
+    alert("Please enter a mission title.");
+    return;
+  }
 
-    const task: StudyTask = {
-      id: `task-${Date.now()}`,
-      title: title.trim(),
-      subject,
-      chapterId: chapterId || available[0]?.id || "",
-      activity,
-      plannedMinutes: minutes,
-      questionTarget: questions,
-      completed: false,
-      date: selectedDate,
-      notes: ""
-    };
+  if (!selectedDate) {
+    alert("Please select a mission date.");
+    return;
+  }
 
-    setTasks([...tasks, task]);
-    setTitle("");
-    setQuestions(30);
+  if (!Number.isFinite(minutes) || minutes < 1 ||
+      !Number.isFinite(questions) || questions < 0) {
+    alert("Please enter valid duration and question targets.");
+    return;
+  }
+
+  const task: StudyTask = {
+    id: `task-${Date.now()}`,
+    title: title.trim(),
+    subject,
+    chapterId: chapterId || available[0]?.id || "",
+    activity,
+    plannedMinutes: minutes,
+    questionTarget: questions,
+    completed: false,
+    date: selectedDate,
+    notes: ""
+  };
+
+  setTasks([...tasks, task]);
+  setTitle("");
+  setQuestions(30);
   }
 
   function toggle(id: string) {
