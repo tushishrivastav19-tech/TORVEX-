@@ -307,7 +307,8 @@ const durationMinutes = Number(minutes);
 
   setTasks([...tasks, task]);
   setTitle("");
-  setQuestions(30);
+setQuestions(30);
+setMinutes("60");
   }
 
   function toggle(id: string) {
@@ -408,8 +409,12 @@ const durationMinutes = Number(minutes);
           </div>
           <div>
             <label>Duration (minutes)</label>
-            <input type="number" min="1" value={minutes}
-             onChange={e => setMinutes(e.target.value)}
+          <input
+  type="number"
+  min="1"
+  value={minutes}
+  onChange={e => setMinutes(e.target.value)}
+/>
           </div>
           <div>
             <label>Question target</label>
