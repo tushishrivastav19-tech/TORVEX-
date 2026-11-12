@@ -502,7 +502,39 @@ setMinutes("60");
     </section>
   );
 }
+  function startEditing(task: StudyTask) {
+    setEditingId(task.id);
+    setEditTitle(task.title);
+    setEditDate(task.date);
+    setEditMinutes(String(task.plannedMinutes));
+    setEditQuestions(String(task.questionTarget));
+  }
 
+  function saveEdit() {
+    const duration = Number(editMinutes);
+    const target = Number(editQuestions);
+
+    if (!editTitle.trim() || !editDate ||
+        !Number.isFinite(duration) || duration < 1 ||
+        !Number.isFinite(target) || target < 0) {
+      alert("Please enter valid mission details.");
+      return;
+    }
+
+    setTasks(tasks.map((t: StudyTask) =>
+      t.id === editingId
+        ? {
+            ...t,
+            title: editTitle.trim(),
+            date: editDate,
+            plannedMinutes: duration,
+            questionTarget: target
+          }
+        : t
+    ));
+
+    setEditingId("");
+  }
 function Syllabus({ chapters, setChapters }: any) {
   const [subject, setSubject] = useState<Subject>("Physics");
   const [search, setSearch] = useState("");
