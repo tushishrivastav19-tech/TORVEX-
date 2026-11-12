@@ -893,8 +893,32 @@ function Garage({ selected, setSelected }: {
 }
 
 function SimpleModule({ page, profile, setProfile, playlists, setPlaylists,
-  tasks, sessions, chapters }: any) {
+  tasks, sessions, chapters, paint }: any) {
   const [playlist, setPlaylist] = useState("");
+    function exportBackup() {
+    const backup = {
+      app: "TORVEX",
+      version: "1.0",
+      exportedAt: new Date().toISOString(),
+      tasks,
+      chapters,
+      sessions,
+      profile,
+      playlists,
+      garagePaint: paint
+    };
+
+    const blob = new Blob(
+      [JSON.stringify(backup, null, 2)],
+      { type: "application/json" }
+    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `TORVEX-backup-${today()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    }
 
   if (page === "Profile & Settings") return <section className="module-page">
     <Banner eyebrow="TORVEX / DRIVER CONFIGURATION" title="PROFILE & SETTINGS"
@@ -927,6 +951,9 @@ function SimpleModule({ page, profile, setProfile, playlists, setPlaylists,
         Focus reminders enabled
       </label>
       <p className="eyebrow">PROFILE SAVED AUTOMATICALLY</p>
+      <button className="primary" onClick={exportBackup}>
+  EXPORT DATA BACKUP
+</button>
     </div>
   </section>;
 
