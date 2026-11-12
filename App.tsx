@@ -1007,7 +1007,7 @@ function Garage({ selected, setSelected }: {
 }
 
 function SimpleModule({ page, profile, setProfile, playlists, setPlaylists,
-  tasks, sessions, chapters, paint }: any) {
+  tasks, setTasks, sessions, setSessions, chapters, setChapters, paint, setPaint }: any) {
   const [playlist, setPlaylist] = useState("");
     function exportBackup() {
     const backup = {
@@ -1191,8 +1191,11 @@ export default function App() {
       {active === "Garage & Collection" && <Garage selected={paint} setSelected={setPaint}/>}
       {["Music Room", "Achievement Vault", "Profile & Settings"].includes(active) &&
         <SimpleModule page={active} profile={profile} setProfile={setProfile}
-          playlists={playlists} setPlaylists={setPlaylists}
-          tasks={tasks} sessions={sessions} chapters={chapters} paint={paint}/>}
+         playlists={playlists} setPlaylists={setPlaylists}
+tasks={tasks} setTasks={setTasks}
+sessions={sessions} setSessions={setSessions}
+chapters={chapters} setChapters={setChapters}
+paint={paint} setPaint={setPaint}
       <footer>TORVEX <span>•</span> DRIVEN BY PROGRESS. DEFINED BY ACHIEVEMENT.</footer>
     </main>
   </div>;
