@@ -16,8 +16,9 @@ type VehicleProps = {
 };
 
 function Vehicle({ modelPath, paint }: VehicleProps) {
-  const { scene } = useGLTF(modelPath);
 
+function Vehicle({ modelPath, paint }: VehicleProps) {
+  const { scene } = useGLTF(modelPath);
   const vehicle = scene.clone(true);
 
   vehicle.traverse((object) => {
@@ -26,31 +27,40 @@ function Vehicle({ modelPath, paint }: VehicleProps) {
     object.castShadow = true;
     object.receiveShadow = true;
 
-    const material = object.material;
-    const materials = Array.isArray(material) ? material : [material];
+    const materials = Array.isArray(object.material)
+      ? object.material
+      : [object.material];
 
     materials.forEach((item) => {
       if (item instanceof THREE.MeshPhysicalMaterial) {
-        item.envMapIntensity = 1.4;
+        item.envMapIntensity = 1.5;
 
         if (item.name.toLowerCase().includes("paint")) {
           item.color.set(paint);
           item.metalness = 0.82;
-          item.roughness = 0.22;
+          item.roughness = 0.2;
           item.clearcoat = 1;
-          item.clearcoatRoughness = 0.12;
+          item.clearcoatRoughness = 0.1;
         }
       }
     });
   });
 
-  return (
-    <primitive
-      object={vehicle}
-      scale={1}
-      position={[0, -0.65, 0]}
-    />
+  const bounds = new THREE.Box3().setFromObject(vehicle);
+  const size = bounds.getSize(new THREE.Vector3());
+  const center = bounds.getCenter(new THREE.Vector3());
+
+  const maxDimension = Math.max(size.x, size.y, size.z);
+  const scale = 5.8 / maxDimension;
+
+  vehicle.scale.setScalar(scale);
+  vehicle.position.set(
+    -center.x * scale,
+    -bounds.min.y * scale,
+    -center.z * scale
   );
+
+  return <primitive object={vehicle} />;
 }
 
 function LoadingVehicle() {
@@ -78,8 +88,8 @@ export default function Garage3D({
         shadows
         dpr={[1, 1.75]}
         camera={{
-          position: [5, 2.2, 7],
-          fov: 34,
+          position: [8, 4.2,10],
+          fov: 42,
           near: 0.1,
           far: 100,
         }}
@@ -135,14 +145,14 @@ export default function Garage3D({
 
         <OrbitControls
           makeDefault
-          target={[0, 0, 0]}
-          enablePan={false}
-          minDistance={4}
-          maxDistance={11}
-          minPolarAngle={Math.PI / 3.2}
-          maxPolarAngle={Math.PI / 2.05}
-          autoRotate
-          autoRotateSpeed={0.65}
+          target={[0, 0.7, 0]}
+enablePan={false}
+minDistance={6}
+maxDistance={14}
+minPolarAngle={Math.PI / 3.2}
+maxPolarAngle={Math.PI / 2.05}
+autoRotate
+autoRotateSpeed={0.45}
         />
       </Canvas>
       <div className="showroom-label">TORVEX / VEHICLE SHOWROOM</div>
