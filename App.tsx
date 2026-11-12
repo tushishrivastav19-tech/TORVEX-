@@ -498,8 +498,6 @@ setMinutes("60");
   );
 }
 
-function Syllabus({ chapters,setChapters }: any) {
-
 function Syllabus({ chapters, setChapters }: any) {
   const [subject, setSubject] = useState<Subject>("Physics");
   const [search, setSearch] = useState("");
