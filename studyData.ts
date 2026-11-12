@@ -149,7 +149,7 @@ export const initialChapters: Chapter[] = syllabusData.map(
     };
   }
 );
-: StudyTask[] = [];
+export const initialTasks: StudyTask[] = [];
 
 export const initialSessions: StudySession[] = [];
 
