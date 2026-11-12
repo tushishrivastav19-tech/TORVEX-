@@ -264,7 +264,7 @@ function Planner({ tasks, setTasks, chapters }: any) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState<Subject>("Physics");
   const [chapterId, setChapterId] = useState("");
-  const [minutes, setMinutes] = useState(60);
+  const [minutes, setMinutes] = useState("60");
   const [questions, setQuestions] = useState(30);
   const [activity, setActivity] = useState<StudyTask["activity"]>("questions");
   const [search, setSearch] = useState("");
@@ -285,11 +285,11 @@ function Planner({ tasks, setTasks, chapters }: any) {
     alert("Please select a mission date.");
     return;
   }
-
-  if (!Number.isFinite(minutes) || minutes < 1 ||
-      !Number.isFinite(questions) || questions < 0) {
-    alert("Please enter valid duration and question targets.");
-    return;
+const durationMinutes = Number(minutes);
+  if (minutes.trim() === "" || !Number.isFinite(durationMinutes) ||
+    durationMinutes < 1 || !Number.isFinite(questions) || questions < 0) {
+  alert("Please enter valid duration and question targets.");
+  return;
   }
 
   const task: StudyTask = {
@@ -298,7 +298,7 @@ function Planner({ tasks, setTasks, chapters }: any) {
     subject,
     chapterId: chapterId || available[0]?.id || "",
     activity,
-    plannedMinutes: minutes,
+    plannedMinutes: durationMinutes,
     questionTarget: questions,
     completed: false,
     date: selectedDate,
@@ -409,7 +409,7 @@ function Planner({ tasks, setTasks, chapters }: any) {
           <div>
             <label>Duration (minutes)</label>
             <input type="number" min="1" value={minutes}
-              onChange={e => setMinutes(Math.max(1, Number(e.target.value)))} />
+             onChange={e => setMinutes(e.target.value)}
           </div>
           <div>
             <label>Question target</label>
