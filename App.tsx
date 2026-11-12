@@ -1078,7 +1078,7 @@ export default function App() {
       {["Music Room", "Achievement Vault", "Profile & Settings"].includes(active) &&
         <SimpleModule page={active} profile={profile} setProfile={setProfile}
           playlists={playlists} setPlaylists={setPlaylists}
-          tasks={tasks} sessions={sessions} chapters={chapters}/>}
+          tasks={tasks} sessions={sessions} chapters={chapters} paint={paint}/>}
       <footer>TORVEX <span>•</span> DRIVEN BY PROGRESS. DEFINED BY ACHIEVEMENT.</footer>
     </main>
   </div>;
