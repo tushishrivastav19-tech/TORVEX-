@@ -499,26 +499,137 @@ setMinutes("60");
 }
 
 function Syllabus({ chapters,setChapters }: any) {
-  const [subject,setSubject] = useState<Subject>("Physics");
-  const filtered = chapters.filter((c: Chapter) => c.subject === subject);
-  function toggle(chapterId: string,topicId: string) {
+
+function Syllabus({ chapters, setChapters }: any) {
+  const [subject, setSubject] = useState<Subject>("Physics");
+  const [search, setSearch] = useState("");
+
+  const query = search.trim().toLowerCase();
+
+  const filtered = chapters
+    .filter((c: Chapter) => c.subject === subject)
+    .filter((c: Chapter) =>
+      !query ||
+      c.name.toLowerCase().includes(query) ||
+      c.topics.some((t) => t.name.toLowerCase().includes(query))
+    );
+
+  function toggle(chapterId: string, topicId: string) {
     setChapters(chapters.map((c: Chapter) => {
       if (c.id !== chapterId) return c;
-      const topics = c.topics.map(t => t.id === topicId ? {...t,completed:!t.completed} : t);
+
+      const topics = c.topics.map(t =>
+        t.id === topicId ? { ...t, completed: !t.completed } : t
+      );
+
       const done = topics.filter(t => t.completed).length;
-      return {...c,topics,status:done === topics.length ? "completed" : done ? "in-progress" : "not-started"};
+
+      return {
+        ...c,
+        topics,
+        status:
+          done === topics.length
+            ? "completed"
+            : done
+              ? "in-progress"
+              : "not-started",
+      };
     }));
   }
-  return <section className="module-page">
-    <Banner eyebrow="TORVEX / SYLLABUS" title="SYLLABUS COMMAND" subtitle="Track every topic and measure actual preparation progress."/>
-    <div className="subject-tabs">{subjects.map(s => <button key={s} className={subject === s ? "subject-tab selected" : "subject-tab"} onClick={() => setSubject(s)}>{s}</button>)}</div>
-    <div className="stats"><Stat label="SUBJECT PROGRESS" value={`${getSubjectProgress(chapters,subject)}%`} note={subject}/><Stat label="CHAPTERS" value={`${filtered.filter((c: Chapter) => c.status === "completed").length}/${filtered.length}`} note="Completed chapters"/></div>
-    <div className="syllabus-list">{filtered.map((c: Chapter) => <article className="panel syllabus-card" key={c.id}>
-      <div className="panel-head"><div><span className="eyebrow">{c.priority.toUpperCase()} PRIORITY</span><h3>{c.name}</h3></div><strong>{getChapterProgress(c)}%</strong></div>
-      <div className="progress-track"><div className="progress-fill" style={{width:`${getChapterProgress(c)}%`}}/></div>
-      {c.topics.map(t => <label className="topic-row" key={t.id}><input type="checkbox" checked={t.completed} onChange={() => toggle(c.id,t.id)}/><span className={t.completed ? "topic-done" : ""}>{t.name}</span></label>)}
-    </article>)}</div>
-  </section>;
+
+  return (
+    <section className="module-page">
+      <Banner
+        eyebrow="TORVEX / SYLLABUS"
+        title="SYLLABUS COMMAND"
+        subtitle="Track every topic and measure actual preparation progress."
+      />
+
+      <div className="subject-tabs">
+        {subjects.map(s => (
+          <button
+            key={s}
+            className={subject === s ? "subject-tab selected" : "subject-tab"}
+            onClick={() => setSubject(s)}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+
+      <div className="stats">
+        <Stat
+          label="SUBJECT PROGRESS"
+          value={`${getSubjectProgress(chapters, subject)}%`}
+          note={subject}
+        />
+        <Stat
+          label="CHAPTERS"
+          value={`${chapters.filter((c: Chapter) => c.subject === subject && c.status === "completed").length}/${chapters.filter((c: Chapter) => c.subject === subject).length}`}
+          note="Completed chapters"
+        />
+      </div>
+
+      <div className="panel">
+        <label>SEARCH CHAPTERS OR TOPICS</label>
+        <input
+          className="planner-input"
+          placeholder="Search e.g. Matrices, Electrostatics, Locus..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <p className="planner-results">
+          SHOWING {filtered.length} OF {chapters.filter((c: Chapter) => c.subject === subject).length} CHAPTERS
+        </p>
+      </div>
+
+      <div className="syllabus-list">
+        {filtered.map((c: Chapter) => {
+          const matchingTopics = query && !c.name.toLowerCase().includes(query)
+            ? c.topics.filter(t => t.name.toLowerCase().includes(query))
+            : c.topics;
+
+          return (
+            <article className="panel syllabus-card" key={c.id}>
+              <div className="panel-head">
+                <div>
+                  <span className="eyebrow">{c.priority.toUpperCase()} PRIORITY</span>
+                  <h3>{c.name}</h3>
+                </div>
+                <strong>{getChapterProgress(c)}%</strong>
+              </div>
+
+              <div className="progress-track">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${getChapterProgress(c)}%` }}
+                />
+              </div>
+
+              {matchingTopics.map(t => (
+                <label className="topic-row" key={t.id}>
+                  <input
+                    type="checkbox"
+                    checked={t.completed}
+                    onChange={() => toggle(c.id, t.id)}
+                  />
+                  <span className={t.completed ? "topic-done" : ""}>
+                    {t.name}
+                  </span>
+                </label>
+              ))}
+            </article>
+          );
+        })}
+
+        {!filtered.length && (
+          <div className="panel empty">
+            No matching chapters or topics found.
+          </div>
+        )}
+      </div>
+    </section>
+  );
 }
 
 function Circuit({ tasks, setTasks, navigate }: any) {
