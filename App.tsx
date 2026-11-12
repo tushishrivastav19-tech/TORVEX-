@@ -773,8 +773,27 @@ function Reports({tasks,sessions,setSessions}: any) {
   const stats = getStudyStats(sessions);
   const accuracy = correct+incorrect ? Math.round(correct/(correct+incorrect)*100) : 0;
   function record() {
-    const entry: StudySession = {id:`session-${Date.now()}`,date:today(),subject,minutes,questionsAttempted:attempted,correct,incorrect};
-    setSessions([...sessions,entry]);
+  if (attempted !== correct + incorrect) {
+    alert("Questions attempted must equal correct + incorrect.");
+    return;
+  }
+
+  if (minutes < 1 || attempted < 0 || correct < 0 || incorrect < 0) {
+    alert("Please enter valid session values.");
+    return;
+  }
+
+  const entry: StudySession = {
+    id: `session-${Date.now()}`,
+    date: today(),
+    subject,
+    minutes,
+    questionsAttempted: attempted,
+    correct,
+    incorrect
+  };
+
+  setSessions([...sessions, entry]);
   }
   return <section className="module-page">
     <Banner eyebrow="TORVEX / PERFORMANCE CENTRE" title="PERFORMANCE REPORTS" subtitle="Only recorded data is used. No guessed scores or fake analytics."/>
