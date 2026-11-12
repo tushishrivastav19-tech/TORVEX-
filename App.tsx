@@ -272,6 +272,11 @@ function Planner({ tasks, setTasks, chapters }: any) {
   const [statusFilter, setStatusFilter] = useState("All");
   const [sortBy, setSortBy] = useState("date");
   const [selectedDate, setSelectedDate] = useState(today());
+    const [editingId, setEditingId] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editMinutes, setEditMinutes] = useState("");
+  const [editQuestions, setEditQuestions] = useState("");
 
   const available = chapters.filter((c: Chapter) => c.subject === subject);
 
