@@ -1196,6 +1196,7 @@ tasks={tasks} setTasks={setTasks}
 sessions={sessions} setSessions={setSessions}
 chapters={chapters} setChapters={setChapters}
 paint={paint} setPaint={setPaint}
+                  />}
       <footer>TORVEX <span>•</span> DRIVEN BY PROGRESS. DEFINED BY ACHIEVEMENT.</footer>
     </main>
   </div>;
